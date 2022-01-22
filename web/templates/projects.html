@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} Projects {% endblock %}</h1>
+
+{% block content %}
+
+<div class="row">
+  <div class="col">
+    <h1>Projects</h1>
+  </div>
+  <div class="col-12 mb-3">
+    <div class="card">
+      <h5 class="card-header">
+        Projects
+        <a
+          href="#"
+          class="btn btn-outline-primary btn-sm float-end"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          +
+        </a>
+      </h5>
+      <ul class="list-group">
+        {% for project in projects %}
+        <li class="list-group-item">
+          <a href="{{ url_for('get_project', id=project.id) }}">
+            {{project.name}}<i class="bi bi-caret-right"></i
+          ></a>
+        </li>
+
+        {% endfor %}
+      </ul>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <form action="{{ url_for('add_project') }}" method="post">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Add new project
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exampleFormControlInput1"
+                    name="name"
+                    placeholder="...."
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <textarea
+                    class="form-control"
+                    id="exampleFormControlTextarea1"
+                    name="description"
+                    rows="3"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-success">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} Index2 2{% endblock %}</h1>
+
+{% block content %}
+
+<div class="row" onload="getPics()">
+  <div class="col">
+    <h1>Task</h1>
+  </div>
+</div>
+
+{% include 'task.html' %} {% endblock %} {% block javascript %}
+<script>
+  function get_products_json(task_id) {
+    var url = "{{ url_for('get_products_json') }}" + "?task_id=" + task_id;
+    fetch(url)
+      .then(function (response) {
+        // The API call was successful!
+        return response.json();
+      })
+      .then(function (data) {
+        // This is the JSON from our response
+        var element = document.getElementById("product_id");
+        element.innerHTML = "";
+        data.forEach(function (product, index) {
+          element.add(new Option(product.name, product.id));
+        });
+      })
+      .catch(function (err) {
+        // There was an error
+        console.warn("Something went wrong.", err);
+      });
+  }
+
+  function getPics() {} //just for this demo
+  const imgs = document.querySelectorAll(".gallery img");
+  const fullPage = document.querySelector("#fullpage");
+
+  imgs.forEach((img) => {
+    img.addEventListener("click", function () {
+      fullPage.style.backgroundImage = "url(" + img.src + ")";
+      fullPage.style.display = "block";
+    });
+  });
+</script>
+
+{% endblock javascript %}

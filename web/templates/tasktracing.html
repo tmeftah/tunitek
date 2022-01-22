@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} {{tasktracing.project.name}} {% endblock %}</h1>
+
+{% block content %}
+
+<div class="row">
+  <div class="col">
+    <h1>Project: {{tasktracing.project.name}}</h1>
+  </div>
+</div>
+
+{% with task = tasktracing.task %} {% include 'task.html' %} {% endwith %} {%
+endblock %} {% block javascript %}
+<script></script>
+
+{% endblock javascript %}

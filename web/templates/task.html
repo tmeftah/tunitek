@@ -1,0 +1,235 @@
+<div class="row">
+  <div class="col-12 mb-3">
+    <div class="card">
+      <h5 class="card-header">
+        {{task.name}}
+        <span class="float-end badge rounded-pill bg-warning text-dark">
+          &nbsp;&nbsp;</span
+        >
+      </h5>
+
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col">
+            <div class="row">
+              <div class="col gallery">
+                <img
+                  src="{{url_for('static', filename='img/300.png' )}}"
+                  width="300"
+                  alt="..."
+                />
+              </div>
+              <div class="d-flex align-content-between flex-wrap mt-2 gallery">
+                {% for i in range(4) %}
+
+                <div class="w-25 p-1">
+                  <img
+                    src="{{url_for('static', filename='img/300.png' )}}"
+                    alt="..."
+                    class="w-100"
+                  />
+                </div>
+                {% endfor %}
+              </div>
+              <div id="fullpage" onclick="this.style.display='none';"></div>
+            </div>
+
+            <p class="card-text mt-3">{{task.description}}</p>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <h5 class="card-header">
+                    Actions
+                    <a
+                      href="#"
+                      class="btn btn-outline-primary btn-sm float-end"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      +
+                    </a>
+                  </h5>
+                  <ul class="list-group list-group-flush">
+                    {% for choice in task.choices %}
+                    <li class="list-group-item">
+                      <input
+                        class="form-check-input me-1"
+                        type="checkbox"
+                        value=""
+                        aria-label="..."
+                      />
+                      {{choice.name}}
+                    </li>
+
+                    {% endfor %}
+                  </ul>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade"
+                    id="exampleModal"
+                    tabindex="-1"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <form
+                        action="{{ url_for('add_choice', id=task.id) }}"
+                        method="post"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                              Add new action
+                            </h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="exampleFormControlInput1"
+                              name="choice"
+                              placeholder="...."
+                              required
+                            />
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col">
+                <div class="card">
+                  <h5 class="card-header">
+                    Products
+                    <a
+                      href="#"
+                      class="btn btn-outline-primary btn-sm float-end"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_related_product"
+                      onclick="get_products_json('{{task.id}}')"
+                    >
+                      +
+                    </a>
+                  </h5>
+
+                  <!-- Modal -->
+
+                  <ul class="list-group list-group-flush">
+                    {% for related_product in task.related_products %}
+                    <li class="list-group-item">
+                      <input
+                        class="form-check-input me-1"
+                        type="checkbox"
+                        checked
+                        value=""
+                        aria-label="..."
+                        disabled
+                      />
+                      {{related_product.product.name}}
+                    </li>
+
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="modal fade"
+                id="add_related_product"
+                tabindex="-1"
+                aria-labelledby="add_related_product"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <form
+                    action="{{ url_for('add_related_product', id=task.id) }}"
+                    method="post"
+                  >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="add_related_product">
+                          Add related product
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <select
+                          class="form-select"
+                          aria-label="...."
+                          name="product_id"
+                          id="product_id"
+                        ></select>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+
+        <div class="row mb-3">
+          <div class="col">
+            {% if previous_page > 0 %}
+            <a href="{{previous_page}}" class="btn btn-outline-info btn-lg">
+              <i class="bi bi-arrow-left-circle"></i> previous
+            </a>
+            {% endif %}
+          </div>
+          <div class="col">
+            {% if next_page <= lenght %}
+            <a
+              href="{{next_page}}"
+              class="btn btn-outline-info btn-lg float-end"
+              >next
+              <i class="bi bi-arrow-right-circle"></i>
+            </a>
+            {% endif %}
+            <br />
+            {{page}} of {{lenght}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} Project : {{project.name}} {% endblock %}</h1>
+
+{% block content %}
+
+<div class="row">
+  <div class="col">
+    <h1>Project : {{project.name}}</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 mb-3">
+    <div class="card">
+      <h5 class="card-header">
+        {{project.name}}
+        <div class="float-end">
+          <span class="">
+            <a
+              href="#"
+              class="btn btn-outline-primary btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#addTaskModal"
+              onclick="get_tasks_json('{{project.id}}')"
+            >
+              add Task +
+            </a>
+          </span>
+          <span class="ms-3 badge rounded-pill bg-warning text-dark">
+            &nbsp;&nbsp;</span
+          >
+        </div>
+      </h5>
+
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col">
+            <p class="card-text mt-3">{{project.description}}</p>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+          <div class="col-6">
+            <ul class="list-group">
+              {% for tasktracing in project.tasktracings %}
+              <li class="list-group-item">{{tasktracing.task.name}}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="addTaskModal"
+        tabindex="-1"
+        aria-labelledby="addTaskModal"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <form
+            action="{{ url_for('add_task_to_project', project_id=project.id) }}"
+            method="post"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add related task</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <select
+                  class="form-select"
+                  aria-label="...."
+                  name="task_id"
+                  id="task_id"
+                ></select>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-success">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block javascript %}
+
+<script>
+  function get_tasks_json(project_id) {
+    var url = "{{ url_for('get_tasks_json') }}" + "?project_id=" + project_id;
+    fetch(url)
+      .then(function (response) {
+        // The API call was successful!
+        return response.json();
+      })
+      .then(function (data) {
+        // This is the JSON from our response
+        var element = document.getElementById("task_id");
+        element.innerHTML = "";
+        data.forEach(function (task, index) {
+          element.add(new Option(task.name, task.id));
+        });
+      })
+      .catch(function (err) {
+        // There was an error
+        console.warn("Something went wrong.", err);
+      });
+  }
+
+  function getPics() {} //just for this demo
+  const imgs = document.querySelectorAll(".gallery img");
+  const fullPage = document.querySelector("#fullpage");
+
+  imgs.forEach((img) => {
+    img.addEventListener("click", function () {
+      fullPage.style.backgroundImage = "url(" + img.src + ")";
+      fullPage.style.display = "block";
+    });
+  });
+</script>
+
+{% endblock javascript %}
